@@ -44,7 +44,7 @@ export const ConfirmStep = ({ onComplete }: { onComplete: () => void }) => {
             }
           />
           <label htmlFor="eligibility" className="text-walmart-gray">
-            I confirm all recipients are 18+ and located in the USA
+            I confirm all recipients are 18+ and located in the USA, Canada, Australia, or UK
           </label>
         </div>
       </div>
