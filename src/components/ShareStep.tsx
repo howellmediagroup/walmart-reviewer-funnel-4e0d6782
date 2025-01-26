@@ -10,25 +10,27 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
 
   const handleShare = async () => {
     try {
-      // Try native sharing first (mobile devices)
-      if (navigator.share) {
-        await navigator.share({
-          text: MESSAGE,
-        });
-        incrementShareCount();
-      } else {
-        // Fallback to clipboard
-        await navigator.clipboard.writeText(MESSAGE);
-        // Open SMS if available (mobile)
-        if (/Android|iPhone/i.test(navigator.userAgent)) {
+      // Copy to clipboard first
+      await navigator.clipboard.writeText(MESSAGE);
+      
+      // Check if on mobile
+      if (/Android|iPhone/i.test(navigator.userAgent)) {
+        // For iOS
+        if (/iPhone/i.test(navigator.userAgent)) {
+          window.location.href = `sms:&body=${encodeURIComponent(MESSAGE)}`;
+        } 
+        // For Android
+        else {
           window.location.href = `sms:?body=${encodeURIComponent(MESSAGE)}`;
         }
-        toast({
-          title: "Message copied!",
-          description: "Share this message with 5 friends to continue.",
-        });
-        incrementShareCount();
       }
+      
+      toast({
+        title: "Message copied!",
+        description: "Share this message with 5 friends to continue.",
+      });
+      
+      incrementShareCount();
     } catch (error) {
       toast({
         title: "Message copied to clipboard",
