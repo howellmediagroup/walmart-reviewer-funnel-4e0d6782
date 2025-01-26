@@ -10,7 +10,7 @@ export const LandingStep = ({ onStart }: { onStart: () => void }) => {
       className="flex flex-col items-center justify-center p-8 max-w-2xl mx-auto text-center"
     >
       <img
-        src="https://corporate.walmart.com/content/dam/corporate/images/logo/walmart-logo-blue.svg"
+        src="/images/Walmart-Logo.png"
         alt="Walmart Logo"
         className="w-48 mb-8 animate-fadeIn"
       />
