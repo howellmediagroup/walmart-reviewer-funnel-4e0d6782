@@ -12,14 +12,12 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
 
   const handleShare = async () => {
     try {
-      // Copy to clipboard first
       await navigator.clipboard.writeText(MESSAGE);
       
       // Check if on Mac desktop
       const isMacDesktop = /Macintosh/.test(navigator.userAgent) && !/iPhone|iPad/.test(navigator.userAgent);
       
       if (isMacDesktop) {
-        // Open iMessage on Mac
         window.location.href = `imessage://`;
       }
       // Check if on mobile
@@ -59,15 +57,9 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
     });
   };
 
-  const handleFrequencySubmit = () => {
-    if (shoppingFrequency) {
-      setShowShareSection(true);
-    } else {
-      toast({
-        title: "Please select an option",
-        description: "Let us know how often you shop at Walmart.",
-      });
-    }
+  const handleFrequencySelect = (frequency: string) => {
+    setShoppingFrequency(frequency);
+    setShowShareSection(true);
   };
 
   return (
@@ -87,7 +79,7 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
               <Button
                 key={frequency}
                 variant={shoppingFrequency === frequency ? "default" : "outline"}
-                onClick={() => setShoppingFrequency(frequency)}
+                onClick={() => handleFrequencySelect(frequency)}
                 className={`p-4 h-auto ${
                   shoppingFrequency === frequency
                     ? "bg-walmart-blue text-white"
@@ -98,12 +90,6 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
               </Button>
             ))}
           </div>
-          <Button
-            onClick={handleFrequencySubmit}
-            className="mt-8 bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 w-full"
-          >
-            Continue
-          </Button>
         </div>
       ) : (
         <>
