@@ -18,7 +18,7 @@ export const LandingStep = ({ onStart }: { onStart: () => void }) => {
         We Are Looking For Product Reviewers!
       </h1>
       <p className="text-xl text-walmart-gray mb-8">
-        Complete the survey and share with friends to receive a $750 Walmart Gift Card!
+        Complete a few easy steps and share with friends to receive a $750 Walmart Gift Card!
       </p>
       <Button
         onClick={onStart}
