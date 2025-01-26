@@ -50,7 +50,7 @@ export const ShareMessage = ({ shareCount, onShare }: ShareMessageProps) => {
     <>
       <h2 className="text-2xl font-bold text-walmart-blue mb-2">Help Spread The Word!</h2>
       <p className="text-walmart-gray mb-6">
-        (Must send to 5 real phone numbers to claim your $750 Walmart reward!)
+        (Must send to 3 real phone numbers to claim your $750 Walmart reward!)
       </p>
       <div className="bg-walmart-lightgray p-6 rounded-lg mb-6 w-full">
         <p className="text-walmart-gray mb-4">{shareCount}/5 friends shared</p>
@@ -61,7 +61,7 @@ export const ShareMessage = ({ shareCount, onShare }: ShareMessageProps) => {
           onClick={handleShare}
           className="bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300"
         >
-          Copy & Share ({5 - shareCount} remaining)
+          Copy & Share ({3 - shareCount} remaining)
         </Button>
       </div>
     </>

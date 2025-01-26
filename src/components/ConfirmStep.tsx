@@ -32,7 +32,7 @@ export const ConfirmStep = ({ onComplete }: { onComplete: () => void }) => {
             }
           />
           <label htmlFor="messages" className="text-walmart-gray">
-            I confirm I sent all 5 messages
+            I confirm I sent all 3 messages
           </label>
         </div>
         <div className="flex items-center space-x-3">

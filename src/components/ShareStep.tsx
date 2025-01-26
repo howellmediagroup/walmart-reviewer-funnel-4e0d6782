@@ -31,7 +31,7 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
   const incrementShareCount = () => {
     setShareCount((prev) => {
       const newCount = prev + 1;
-      if (newCount >= 5) {
+      if (newCount >= 3) {
         onComplete();
       }
       return newCount;
