@@ -2,11 +2,15 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 
 const MESSAGE = `Hey! Walmart is desperately looking for product reviewers, I just signed up! They're giving away $750 to shop and review anything at Walmart to everyone who signs up and shares the program with 5 friends. Sign up here: https://ReviewerPlace.com 🙏`;
 
 export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
   const [shareCount, setShareCount] = useState(0);
+  const [shoppingFrequency, setShoppingFrequency] = useState<string>("");
+  const [showShareSection, setShowShareSection] = useState(false);
 
   const handleShare = async () => {
     try {
@@ -57,6 +61,17 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
     });
   };
 
+  const handleFrequencySubmit = () => {
+    if (shoppingFrequency) {
+      setShowShareSection(true);
+    } else {
+      toast({
+        title: "Please select an option",
+        description: "Let us know how often you shop at Walmart.",
+      });
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -64,22 +79,50 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
       transition={{ duration: 0.5 }}
       className="flex flex-col items-center justify-center p-8 max-w-2xl mx-auto text-center"
     >
-      <h2 className="text-2xl font-bold text-walmart-blue mb-2">Help Spread The Word!</h2>
-      <p className="text-walmart-gray mb-6">
-        (Must send to 5 real phone numbers to claim your $750 Walmart reward!)
-      </p>
-      <div className="bg-walmart-lightgray p-6 rounded-lg mb-6 w-full">
-        <p className="text-walmart-gray mb-4">{shareCount}/5 friends shared</p>
-        <div className="bg-white p-4 rounded-lg mb-4 text-left">
-          <p className="text-sm">{MESSAGE}</p>
+      {!showShareSection ? (
+        <div className="w-full max-w-md">
+          <h2 className="text-2xl font-bold text-walmart-blue mb-6">
+            How often do you shop at Walmart?
+          </h2>
+          <RadioGroup
+            value={shoppingFrequency}
+            onValueChange={setShoppingFrequency}
+            className="flex flex-col space-y-4"
+          >
+            {["Daily", "Weekly", "Monthly", "Never"].map((frequency) => (
+              <div key={frequency} className="flex items-center space-x-3">
+                <RadioGroupItem value={frequency} id={frequency} />
+                <Label htmlFor={frequency}>{frequency}</Label>
+              </div>
+            ))}
+          </RadioGroup>
+          <Button
+            onClick={handleFrequencySubmit}
+            className="mt-8 bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300"
+          >
+            Continue
+          </Button>
         </div>
-        <Button
-          onClick={handleShare}
-          className="bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300"
-        >
-          Copy & Share ({5 - shareCount} remaining)
-        </Button>
-      </div>
+      ) : (
+        <>
+          <h2 className="text-2xl font-bold text-walmart-blue mb-2">Help Spread The Word!</h2>
+          <p className="text-walmart-gray mb-6">
+            (Must send to 5 real phone numbers to claim your $750 Walmart reward!)
+          </p>
+          <div className="bg-walmart-lightgray p-6 rounded-lg mb-6 w-full">
+            <p className="text-walmart-gray mb-4">{shareCount}/5 friends shared</p>
+            <div className="bg-white p-4 rounded-lg mb-4 text-left">
+              <p className="text-sm">{MESSAGE}</p>
+            </div>
+            <Button
+              onClick={handleShare}
+              className="bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300"
+            >
+              Copy & Share ({5 - shareCount} remaining)
+            </Button>
+          </div>
+        </>
+      )}
     </motion.div>
   );
 };
