@@ -1,12 +1,22 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { LandingStep } from "@/components/LandingStep";
+import { ShareStep } from "@/components/ShareStep";
+import { ConfirmStep } from "@/components/ConfirmStep";
+import { RewardStep } from "@/components/RewardStep";
 
 const Index = () => {
+  const [step, setStep] = useState(0);
+
+  const steps = [
+    <LandingStep key="landing" onStart={() => setStep(1)} />,
+    <ShareStep key="share" onComplete={() => setStep(2)} />,
+    <ConfirmStep key="confirm" onComplete={() => setStep(3)} />,
+    <RewardStep key="reward" />,
+  ];
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-white">
+      <div className="container mx-auto py-12">{steps[step]}</div>
     </div>
   );
 };
