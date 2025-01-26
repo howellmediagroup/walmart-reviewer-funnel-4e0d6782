@@ -33,14 +33,14 @@ export const ShareMessage = ({ shareCount, onShare }: ShareMessageProps) => {
       
       toast({
         title: "Message copied!",
-        description: "Share this message with 5 friends to continue.",
+        description: "Share this message with 3 friends to continue.",
       });
       
       onShare();
     } catch (error) {
       toast({
         title: "Message copied to clipboard",
-        description: "Please paste and share with 5 friends to continue.",
+        description: "Please paste and share with 3 friends to continue.",
       });
       onShare();
     }
@@ -53,7 +53,7 @@ export const ShareMessage = ({ shareCount, onShare }: ShareMessageProps) => {
         (Must send to 3 real phone numbers to claim your $750 Walmart reward!)
       </p>
       <div className="bg-walmart-lightgray p-6 rounded-lg mb-6 w-full">
-        <p className="text-walmart-gray mb-4">{shareCount}/5 friends shared</p>
+        <p className="text-walmart-gray mb-4">{shareCount}/3 friends shared</p>
         <div className="bg-white p-4 rounded-lg mb-4 text-left">
           <p className="text-sm">{MESSAGE}</p>
         </div>
