@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { QuestionCard } from "./survey/QuestionCard";
+import { LoadingSuccess } from "./survey/LoadingSuccess";
+import { ShareMessage } from "./survey/ShareMessage";
 import { toast } from "@/components/ui/use-toast";
 
-const MESSAGE = `Hey! Walmart is urgently looking for product reviewers, I just signed up! They're giving reviewers $750 to shop and review anything at Walmart to everyone who signs up and shares the program with 5 friends. Sign up here: https://ReviewerPlace.com 🙏`;
+type QuestionType = "shopping" | "helpfulness" | "age" | "loading" | "success" | "share";
 
 export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
   const [shareCount, setShareCount] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<"shopping" | "helpfulness" | "age" | "loading" | "success" | "share">("shopping");
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionType>("shopping");
   const [shoppingFrequency, setShoppingFrequency] = useState<string>("");
 
   useEffect(() => {
@@ -15,7 +17,6 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
       const timer = setTimeout(() => {
         setCurrentQuestion("success");
       }, 2000);
-
       return () => clearTimeout(timer);
     }
 
@@ -23,47 +24,9 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
       const timer = setTimeout(() => {
         setCurrentQuestion("share");
       }, 2000);
-
       return () => clearTimeout(timer);
     }
   }, [currentQuestion]);
-
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(MESSAGE);
-      
-      // Check if on Mac desktop
-      const isMacDesktop = /Macintosh/.test(navigator.userAgent) && !/iPhone|iPad/.test(navigator.userAgent);
-      
-      if (isMacDesktop) {
-        window.location.href = `imessage://`;
-      }
-      // Check if on mobile
-      else if (/Android|iPhone/i.test(navigator.userAgent)) {
-        // For iOS
-        if (/iPhone/i.test(navigator.userAgent)) {
-          window.location.href = `sms:&body=${encodeURIComponent(MESSAGE)}`;
-        } 
-        // For Android
-        else {
-          window.location.href = `sms:?body=${encodeURIComponent(MESSAGE)}`;
-        }
-      }
-      
-      toast({
-        title: "Message copied!",
-        description: "Share this message with 5 friends to continue.",
-      });
-      
-      incrementShareCount();
-    } catch (error) {
-      toast({
-        title: "Message copied to clipboard",
-        description: "Please paste and share with 5 friends to continue.",
-      });
-      incrementShareCount();
-    }
-  };
 
   const incrementShareCount = () => {
     setShareCount((prev) => {
@@ -75,8 +38,8 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
     });
   };
 
-  const handleFrequencySelect = (frequency: string) => {
-    setShoppingFrequency(frequency);
+  const handleFrequencySelect = (frequency: string | boolean) => {
+    setShoppingFrequency(frequency as string);
     setCurrentQuestion("helpfulness");
   };
 
@@ -84,7 +47,7 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
     setCurrentQuestion("age");
   };
 
-  const handleAgeSelect = (isAdult: boolean) => {
+  const handleAgeSelect = (isAdult: boolean | string) => {
     if (isAdult) {
       setCurrentQuestion("loading");
     } else {
@@ -98,128 +61,55 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
   const renderQuestion = () => {
     switch (currentQuestion) {
       case "loading":
-        return (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="w-full max-w-md text-center"
-          >
-            <div className="mb-6">
-              <div className="w-12 h-12 border-4 border-walmart-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <h2 className="text-2xl font-bold text-walmart-blue">
-                Checking your responses to see if you qualify...
-              </h2>
-            </div>
-          </motion.div>
-        );
-
       case "success":
-        return (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md text-center"
-          >
-            <h2 className="text-3xl font-bold text-walmart-blue mb-4">
-              Congratulations!
-            </h2>
-            <p className="text-xl text-walmart-gray">
-              Based on your responses, you are eligible!
-            </p>
-          </motion.div>
-        );
+        return <LoadingSuccess state={currentQuestion} />;
 
       case "shopping":
         return (
-          <div className="w-full max-w-md">
-            <h2 className="text-2xl font-bold text-walmart-blue mb-6">
-              How often do you shop at Walmart?
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {["Daily", "Weekly", "Monthly", "Never"].map((frequency) => (
-                <Button
-                  key={frequency}
-                  variant="outline"
-                  onClick={() => handleFrequencySelect(frequency)}
-                  className="p-4 h-auto border-2 border-walmart-blue text-walmart-blue hover:bg-walmart-blue hover:text-white"
-                >
-                  {frequency}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <QuestionCard
+            title="How often do you shop at Walmart?"
+            options={[
+              { label: "Daily", value: "Daily" },
+              { label: "Weekly", value: "Weekly" },
+              { label: "Monthly", value: "Monthly" },
+              { label: "Never", value: "Never" }
+            ]}
+            onSelect={handleFrequencySelect}
+          />
         );
 
       case "helpfulness":
         return (
-          <div className="w-full max-w-md">
-            <h2 className="text-2xl font-bold text-walmart-blue mb-6">
-              How helpful would a $750 Walmart gift card be for you right now?
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "Very helpful",
-                "Somewhat helpful",
-                "Not very helpful",
-                "Don't need it"
-              ].map((option) => (
-                <Button
-                  key={option}
-                  variant="outline"
-                  onClick={() => handleHelpfulnessSelect()}
-                  className="p-4 h-auto border-2 border-walmart-blue text-walmart-blue hover:bg-walmart-blue hover:text-white"
-                >
-                  {option}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <QuestionCard
+            title="How helpful would a $750 Walmart gift card be for you right now?"
+            options={[
+              { label: "Very helpful", value: "Very helpful" },
+              { label: "Somewhat helpful", value: "Somewhat helpful" },
+              { label: "Not very helpful", value: "Not very helpful" },
+              { label: "Don't need it", value: "Don't need it" }
+            ]}
+            onSelect={handleHelpfulnessSelect}
+          />
         );
 
       case "age":
         return (
-          <div className="w-full max-w-md">
-            <h2 className="text-2xl font-bold text-walmart-blue mb-6">
-              Are you currently 18 years or older?
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { label: "Yes", value: true },
-                { label: "No", value: false }
-              ].map((option) => (
-                <Button
-                  key={option.label}
-                  variant="outline"
-                  onClick={() => handleAgeSelect(option.value)}
-                  className="p-4 h-auto border-2 border-walmart-blue text-walmart-blue hover:bg-walmart-blue hover:text-white"
-                >
-                  {option.label}
-                </Button>
-              ))}
-            </div>
-          </div>
+          <QuestionCard
+            title="Are you currently 18 years or older?"
+            options={[
+              { label: "Yes", value: true },
+              { label: "No", value: false }
+            ]}
+            onSelect={handleAgeSelect}
+          />
         );
 
       case "share":
         return (
-          <>
-            <h2 className="text-2xl font-bold text-walmart-blue mb-2">Help Spread The Word!</h2>
-            <p className="text-walmart-gray mb-6">
-              (Must send to 5 real phone numbers to claim your $750 Walmart reward!)
-            </p>
-            <div className="bg-walmart-lightgray p-6 rounded-lg mb-6 w-full">
-              <p className="text-walmart-gray mb-4">{shareCount}/5 friends shared</p>
-              <div className="bg-white p-4 rounded-lg mb-4 text-left">
-                <p className="text-sm">{MESSAGE}</p>
-              </div>
-              <Button
-                onClick={handleShare}
-                className="bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300"
-              >
-                Copy & Share ({5 - shareCount} remaining)
-              </Button>
-            </div>
-          </>
+          <ShareMessage
+            shareCount={shareCount}
+            onShare={incrementShareCount}
+          />
         );
     }
   };
