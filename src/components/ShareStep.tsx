@@ -2,8 +2,6 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 
 const MESSAGE = `Hey! Walmart is desperately looking for product reviewers, I just signed up! They're giving away $750 to shop and review anything at Walmart to everyone who signs up and shares the program with 5 friends. Sign up here: https://ReviewerPlace.com 🙏`;
 
@@ -84,21 +82,25 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
           <h2 className="text-2xl font-bold text-walmart-blue mb-6">
             How often do you shop at Walmart?
           </h2>
-          <RadioGroup
-            value={shoppingFrequency}
-            onValueChange={setShoppingFrequency}
-            className="flex flex-col space-y-4"
-          >
+          <div className="grid grid-cols-2 gap-4">
             {["Daily", "Weekly", "Monthly", "Never"].map((frequency) => (
-              <div key={frequency} className="flex items-center space-x-3">
-                <RadioGroupItem value={frequency} id={frequency} />
-                <Label htmlFor={frequency}>{frequency}</Label>
-              </div>
+              <Button
+                key={frequency}
+                variant={shoppingFrequency === frequency ? "default" : "outline"}
+                onClick={() => setShoppingFrequency(frequency)}
+                className={`p-4 h-auto ${
+                  shoppingFrequency === frequency
+                    ? "bg-walmart-blue text-white"
+                    : "border-2 border-walmart-blue text-walmart-blue hover:bg-walmart-blue hover:text-white"
+                }`}
+              >
+                {frequency}
+              </Button>
             ))}
-          </RadioGroup>
+          </div>
           <Button
             onClick={handleFrequencySubmit}
-            className="mt-8 bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300"
+            className="mt-8 bg-walmart-blue hover:bg-blue-700 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 w-full"
           >
             Continue
           </Button>
