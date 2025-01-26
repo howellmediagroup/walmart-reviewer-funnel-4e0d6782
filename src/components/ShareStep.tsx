@@ -13,8 +13,15 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
       // Copy to clipboard first
       await navigator.clipboard.writeText(MESSAGE);
       
+      // Check if on Mac desktop
+      const isMacDesktop = /Macintosh/.test(navigator.userAgent) && !/iPhone|iPad/.test(navigator.userAgent);
+      
+      if (isMacDesktop) {
+        // Open iMessage on Mac
+        window.location.href = `imessage://`;
+      }
       // Check if on mobile
-      if (/Android|iPhone/i.test(navigator.userAgent)) {
+      else if (/Android|iPhone/i.test(navigator.userAgent)) {
         // For iOS
         if (/iPhone/i.test(navigator.userAgent)) {
           window.location.href = `sms:&body=${encodeURIComponent(MESSAGE)}`;
