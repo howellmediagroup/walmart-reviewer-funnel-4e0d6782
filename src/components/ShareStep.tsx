@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { toast } from "@/components/ui/use-toast";
@@ -7,8 +7,26 @@ const MESSAGE = `Hey! Walmart is desperately looking for product reviewers, I ju
 
 export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
   const [shareCount, setShareCount] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState<"shopping" | "helpfulness" | "age" | "share">("shopping");
+  const [currentQuestion, setCurrentQuestion] = useState<"shopping" | "helpfulness" | "age" | "loading" | "success" | "share">("shopping");
   const [shoppingFrequency, setShoppingFrequency] = useState<string>("");
+
+  useEffect(() => {
+    if (currentQuestion === "loading") {
+      const timer = setTimeout(() => {
+        setCurrentQuestion("success");
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (currentQuestion === "success") {
+      const timer = setTimeout(() => {
+        setCurrentQuestion("share");
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentQuestion]);
 
   const handleShare = async () => {
     try {
@@ -68,7 +86,7 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
 
   const handleAgeSelect = (isAdult: boolean) => {
     if (isAdult) {
-      setCurrentQuestion("share");
+      setCurrentQuestion("loading");
     } else {
       toast({
         title: "Age Requirement",
@@ -79,6 +97,38 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
 
   const renderQuestion = () => {
     switch (currentQuestion) {
+      case "loading":
+        return (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="w-full max-w-md text-center"
+          >
+            <div className="mb-6">
+              <div className="w-12 h-12 border-4 border-walmart-blue border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+              <h2 className="text-2xl font-bold text-walmart-blue">
+                Checking your responses to see if you qualify...
+              </h2>
+            </div>
+          </motion.div>
+        );
+
+      case "success":
+        return (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="w-full max-w-md text-center"
+          >
+            <h2 className="text-3xl font-bold text-walmart-blue mb-4">
+              Congratulations!
+            </h2>
+            <p className="text-xl text-walmart-gray">
+              Based on your responses, you are eligible!
+            </p>
+          </motion.div>
+        );
+
       case "shopping":
         return (
           <div className="w-full max-w-md">
