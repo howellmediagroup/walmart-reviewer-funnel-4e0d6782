@@ -10,31 +10,42 @@ export const ShareStep = ({ onComplete }: { onComplete: () => void }) => {
 
   const handleShare = async () => {
     try {
-      await navigator.share({
-        text: MESSAGE,
-      });
-      setShareCount((prev) => {
-        const newCount = prev + 1;
-        if (newCount >= 5) {
-          onComplete();
+      // Try native sharing first (mobile devices)
+      if (navigator.share) {
+        await navigator.share({
+          text: MESSAGE,
+        });
+        incrementShareCount();
+      } else {
+        // Fallback to clipboard
+        await navigator.clipboard.writeText(MESSAGE);
+        // Open SMS if available (mobile)
+        if (/Android|iPhone/i.test(navigator.userAgent)) {
+          window.location.href = `sms:?body=${encodeURIComponent(MESSAGE)}`;
         }
-        return newCount;
-      });
+        toast({
+          title: "Message copied!",
+          description: "Share this message with 5 friends to continue.",
+        });
+        incrementShareCount();
+      }
     } catch (error) {
-      // Fallback to clipboard if share API is not supported
-      await navigator.clipboard.writeText(MESSAGE);
       toast({
-        title: "Message copied!",
-        description: "Share this message with 5 friends to continue.",
+        title: "Message copied to clipboard",
+        description: "Please paste and share with 5 friends to continue.",
       });
-      setShareCount((prev) => {
-        const newCount = prev + 1;
-        if (newCount >= 5) {
-          onComplete();
-        }
-        return newCount;
-      });
+      incrementShareCount();
     }
+  };
+
+  const incrementShareCount = () => {
+    setShareCount((prev) => {
+      const newCount = prev + 1;
+      if (newCount >= 5) {
+        onComplete();
+      }
+      return newCount;
+    });
   };
 
   return (
