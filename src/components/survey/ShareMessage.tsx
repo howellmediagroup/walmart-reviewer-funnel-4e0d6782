@@ -1,7 +1,8 @@
+
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 
-const MESSAGE = `Hey! Walmart is urgently looking for product reviewers, I just signed up! They're giving reviewers $750 to shop and review anything at Walmart to everyone who signs up and shares the program with 5 friends. Sign up here: https://ReviewerPlace.com 🙏`;
+const MESSAGE = `Hey! Walmart is urgently looking for product reviewers, I just signed up! They're giving reviewers $750 to shop and review anything at Walmart to everyone who signs up and shares the program with 3 friends. Sign up here: https://ReviewerPlace.com 🙏`;
 
 interface ShareMessageProps {
   shareCount: number;
